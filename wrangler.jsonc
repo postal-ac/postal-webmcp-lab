@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "postal-webmcp-lab",
+  "main": "./worker/index.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  // Custom domain on the postal.music zone: Cloudflare creates the DNS
+  // record and certificate on deploy, and keeps them in sync.
+  "routes": [{ "pattern": "lab.postal.music", "custom_domain": true }],
+  // Keep the workers.dev URL alive alongside the custom domain — it is the
+  // working fallback while lab.postal.music is exempted from the zone's
+  // vanity-subdomain redirect rule.
+  "workers_dev": true,
+  "assets": {
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+  // Per-IP limits on the two unauthenticated auth endpoints. namespace_id is
+  // an arbitrary per-Worker identifier, not a resource to provision — nothing
+  // needs creating before `wrangler deploy`. Without these bindings the Worker
+  // falls back to a weaker per-isolate counter.
+  "ratelimits": [
+    { "name": "AUTH_RATE_LIMIT", "namespace_id": "1001", "simple": { "limit": 10, "period": 60 } },
+    { "name": "DEMO_RATE_LIMIT", "namespace_id": "1002", "simple": { "limit": 5, "period": 60 } }
+  ],
+  "vars": {
+    // The Postal backend the Lab drives. Public, unauthenticated value —
+    // the credentials live in secrets (POSTAL_API_KEY, SESSION_SECRET).
+    "POSTAL_API_URL": "https://api.postal.ac",
+    "POSTAL_APP_URL": "https://postal.music"
+  }
+}

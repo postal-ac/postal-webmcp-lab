@@ -1,0 +1,11 @@
+# Copy to .dev.vars for local development (never commit .dev.vars).
+POSTAL_API_URL="https://api.postal.ac"
+POSTAL_API_KEY="API_KEY"
+SESSION_SECRET="generate-with: openssl rand -hex 32"
+
+# Optional reviewer door. Set both to enable the "Continue as demo account"
+# panel; leave them unset and the endpoint returns 404 and the panel is hidden.
+# The code must be at least 20 characters — generate one with
+# `openssl rand -base64 24` — or the door stays shut.
+# DEMO_ACCESS_CODE="a-long-random-code-you-hand-out"
+# DEMO_ACCESS_TOKEN="a-postal-access-token-for-the-demo-account"
